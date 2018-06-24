@@ -1,0 +1,56 @@
+upstream odoo {
+    server 127.0.0.1:8069;
+}
+
+# WebinolySSLredirectStart - HTTP to HTTPS Redirect
+server {
+        listen 80;
+        listen [::]:80;
+                server_name erp.twinsskin.com;
+        return 301 https://$host$request_uri;
+}
+# WebinolySSLredirectEnd
+server {
+        listen 443 ssl http2;
+        listen [::]:443 ssl http2;
+
+        server_name erp.twinsskin.com;
+
+        # WebinolySSLstart
+        ssl on;
+        ssl_certificate /etc/letsencrypt/live/erp.twinsskin.com-0001/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/erp.twinsskin.com-0001/privkey.pem;
+        ssl_stapling on;
+        ssl_stapling_verify on;
+        ssl_trusted_certificate /etc/letsencrypt/live/erp.twinsskin.com-0001/chain.pem;
+        # WebinolySSLend
+        access_log /var/log/nginx/erp.twinsskin.com.access.log we_log;
+        error_log /var/log/nginx/erp.twinsskin.com.error.log;
+
+#       root /var/www/erp.twinsskin.com/htdocs;
+
+        location / {
+        proxy_pass http://erp.twinsskin.com:8069;
+        proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
+        proxy_redirect off;
+
+        proxy_set_header    Host            $host;
+        proxy_set_header    X-Real-IP       $remote_addr;
+        proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header    X-Forwarded-Proto https;
+        }
+
+        location ~* /web/static/ {
+        proxy_cache_valid 200 60m;
+        proxy_buffering on;
+        expires 864000;
+        proxy_pass http://odoo;
+    }
+
+
+#       include common/locations.conf;
+        include common/headers-http.conf;
+        include common/headers-html.conf;
+        include common/headers-https.conf;
+        include /var/www/erp.twinsskin.com/conf/nginx/*.conf;
+}
