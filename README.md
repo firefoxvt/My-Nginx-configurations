@@ -1,4 +1,4 @@
-#Nginx configrations for your business.
+# Nginx configrations for your business.
 
 Requirements
 ---
@@ -9,6 +9,8 @@ Documentation for Webinoly
 ---
 For complete documentation, please visit [this site](https://webinoly.com/en/).
 
+This repository contains:
+---
 #nginx-odoo-https.conf
 
 The file contains Nginx configuration file for Odoo v11 with Letsencrypt. Of course, it has the reverse proxy.
