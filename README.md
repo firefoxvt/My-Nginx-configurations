@@ -2,7 +2,7 @@
 
 Requirements
 ---
---* Must use Nginx.
+### Must use Nginx.
 I highly recommend use [Webinoly](https://github.com/QROkes/webinoly) script to setup Nginx properly.
 
 Documentation for Webinoly
